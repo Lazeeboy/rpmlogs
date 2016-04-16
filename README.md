@@ -1,4 +1,4 @@
-# F1FeederApp-Part1
+# RPM Logs
 
 ## Getting Started
 
@@ -6,8 +6,8 @@ All you need to do is to clone this repository,
 
 
 ```
-git clone https://github.com/raonibr/f1feeder-part1
-cd f1feeder-part1
+git clone https://github.com/Lazeeboy/rpmlogs
+cd rpmlogs
 ```
 
 Then, install the dependencies:
