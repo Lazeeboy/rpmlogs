@@ -41,15 +41,18 @@ function AppController($scope, AppService, $q) {
 	                       {difficultyId : "5", difficultyName : "Mythic"}
 	                       ];
 	
+	$scope.fromDate = new Date();
+	$scope.toDate = new Date();
+	
 	$scope.request = {
 		guild : 'Rage Pillage Murder',
 		server : 'Korgath',
 		region : 'US',
-		fromDate : new Date(),
-		toDate : new Date()
+		fromDate : '',
+		toDate : ''
 	}
 	
-	$scope.request.fromDate.setDate($scope.request.fromDate.getDate() - 14);
+	$scope.fromDate.setDate($scope.fromDate.getDate() - 14);
 	
 	getZones();
 	
@@ -89,8 +92,14 @@ function AppController($scope, AppService, $q) {
 	function getPlayers(request){
 		var deferred = $q.defer();
 		
-		$scope.request.fromDate = new Date($scope.request.fromDate).getTime();
-		$scope.request.toDate = new Date($scope.request.toDate).getTime();
+		var fromDate = new Date($scope.fromDate);
+		var toDate = new Date($scope.toDate);
+		
+		fromDate.setDate(fromDate.getDate() + 1);
+		toDate.setDate(toDate.getDate() + 1);
+		
+		$scope.request.fromDate = fromDate.getTime();
+		$scope.request.toDate = toDate.getTime();
 		
 		getReports(request).then(function(){
 			$scope.players = [];
