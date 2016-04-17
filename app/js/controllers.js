@@ -9,6 +9,7 @@ function AppController($scope, AppService, $q) {
 	$scope.names = [];
 	$scope.rankings = [];
 	$scope.zone = {};
+	$scope.overallRank = true;
 	$scope.orderFilter = 'rank.average';
 	$scope.encounterIndex = encounterIndex;
 	$scope.getStyle = getStyle;
@@ -43,8 +44,12 @@ function AppController($scope, AppService, $q) {
 	$scope.request = {
 		guild : 'Rage Pillage Murder',
 		server : 'Korgath',
-		region : 'US'
+		region : 'US',
+		fromDate : new Date(),
+		toDate : new Date()
 	}
+	
+	$scope.request.fromDate.setDate($scope.request.fromDate.getDate() - 14);
 	
 	getZones();
 	
@@ -83,6 +88,10 @@ function AppController($scope, AppService, $q) {
 	
 	function getPlayers(request){
 		var deferred = $q.defer();
+		
+		$scope.request.fromDate = new Date($scope.request.fromDate).getTime();
+		$scope.request.toDate = new Date($scope.request.toDate).getTime();
+		
 		getReports(request).then(function(){
 			$scope.players = [];
 			$scope.names = [];
@@ -154,9 +163,15 @@ function AppController($scope, AppService, $q) {
 		
 		angular.forEach(rankings, function(thisRank){
 			if (thisRank.difficulty === parseInt($scope.difficulty)) {
-				var average = ((thisRank.outOf - thisRank.rank) / thisRank.outOf) * 100;
-				averages.push(average);
-				rank.encounters[thisRank.encounter].averages.push(average);
+				if ($scope.overallRank) {
+					var average = ((thisRank.outOf - thisRank.rank) / thisRank.outOf) * 100;
+					averages.push(average);
+					rank.encounters[thisRank.encounter].averages.push(average);
+				} else if (!$scope.overallRank && thisRank.startTime > $scope.request.fromDate && thisRank.startTime < $scope.request.toDate) {
+					var average = ((thisRank.outOf - thisRank.rank) / thisRank.outOf) * 100;
+					averages.push(average);
+					rank.encounters[thisRank.encounter].averages.push(average);
+				}
 			};
 		});
 		

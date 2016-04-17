@@ -1,5 +1,5 @@
 angular
-	.module('App', ['ngRoute', 'ngResource'])
+	.module('App', ['ngRoute', 'ngResource', 'jkuri.datepicker'])
 	.config(RouteManager);
 	
 RouteManager.$inject = ['$routeProvider'];
