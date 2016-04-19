@@ -47,7 +47,8 @@ function AppController($scope, AppService, $q) {
 	$scope.difficulties = [
        {difficultyId : "3", difficultyName : "Normal"},
        {difficultyId : "4", difficultyName : "Heroic"},
-       {difficultyId : "5", difficultyName : "Mythic"}
+       {difficultyId : "5", difficultyName : "Mythic"},
+       {difficultyId : "10", difficultyName : "Challenge Mode"}
     ];
 	$scope.encounters = [];
 	$scope.brackets = [];
