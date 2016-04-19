@@ -1,9 +1,9 @@
 {
-  "name": "angular-seed",
+  "name": "rpmlogs",
   "private": true,
   "version": "0.0.0",
-  "description": "A starter project for AngularJS",
-  "repository": "https://github.com/angular/angular-seed",
+  "description": "A starter site for Rage Pillage Murder",
+  "repository": "https://github.com/Lazeeboy/rpmlogs",
   "license": "MIT",
   "devDependencies": {
     "karma": "~0.10",

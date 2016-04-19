@@ -8,7 +8,7 @@ function AppController($scope, AppService, $q) {
 	$scope.players = [];
 	$scope.names = [];
 	$scope.rankings = [];
-	$scope.zone = {};
+	$scope.zones = {};
 	$scope.overallRank = true;
 	$scope.orderFilter = 'rank.average';
 	$scope.encounterIndex = encounterIndex;
@@ -16,30 +16,39 @@ function AppController($scope, AppService, $q) {
 	$scope.reverse = true;
 	$scope.searchIsRunning = false;
 	$scope.order = order;
-	$scope.raid = '8';
+	$scope.zone = '8';
 	$scope.difficulty = '5';
+	$scope.metric = 'dps';
 	$scope.search = search;
-	$scope.classes = ["DeathKnight", 
-	                  "Druid", 
-	                  "Hunter", 
-	                  "Mage", 
-	                  "Monk", 
-	                  "Paladin", 
-	                  "Priest", 
-	                  "Rogue", 
-	                  "Shaman", 
-	                  "Warlock", 
-	                  "Warrior"];
-	
-	$scope.raids = [
-	                {id : "8", name : "Hellfire Citadel"}
-	                ];
-	
+	$scope.getEncounters = getEncounters;
+	$scope.classes = [
+	    "DeathKnight",
+		"DemonHunter",
+		"Druid", 
+		"Hunter", 
+		"Mage", 
+		"Monk", 
+		"Paladin", 
+		"Priest", 
+		"Rogue", 
+		"Shaman", 
+		"Warlock", 
+		"Warrior"
+	];
+	$scope.metrics = [
+	   {id:	"dps", 			name: "DPS"},
+	   {id:	"bossdps", 		name: "Boss DPS"},
+	   {id:	"hps", 			name: "HPS"},
+	   {id:	"tankhps", 		name: "Tank HPS"},
+	   {id:	"krsi", 		name: "KRSI"},
+	   {id:	"playerspeed", 	name: "Player Speed"}
+	]
 	$scope.difficulties = [
-	                       {difficultyId : "3", difficultyName : "Normal"},
-	                       {difficultyId : "4", difficultyName : "Heroic"},
-	                       {difficultyId : "5", difficultyName : "Mythic"}
-	                       ];
+       {difficultyId : "3", difficultyName : "Normal"},
+       {difficultyId : "4", difficultyName : "Heroic"},
+       {difficultyId : "5", difficultyName : "Mythic"}
+    ];
+	$scope.encounters = [];
 	
 	$scope.fromDate = new Date();
 	$scope.toDate = new Date();
@@ -65,12 +74,23 @@ function AppController($scope, AppService, $q) {
 	
 	function getZones() {
 		AppService.getZones().get().$promise.then(function(response){
-			angular.forEach(response, function(zone){
-				if (zone.id === 8) {
-					$scope.zone = zone;
-				}
-			});
+			$scope.zones = response;
+			getEncounters();
 		});		
+	}
+	
+	function getEncounters() {
+		$scope.players = [];
+		$scope.encounters = [];
+		angular.forEach($scope.zones, function(zone){
+			if (zone.id === parseInt($scope.zone)) {
+				angular.forEach(zone.encounters, function(encounter){
+					encounter.average = 0;
+					encounter.averages = [];
+					$scope.encounters.push(encounter);
+				});
+			}
+		});
 	}
 	
 	function getReports(request) {
@@ -79,7 +99,7 @@ function AppController($scope, AppService, $q) {
 		$scope.players = [];
 		AppService.getReports(request).get().$promise.then(function(response){
 			angular.forEach(response, function(report){
-				if(report.zone === parseInt($scope.raid)){
+				if(report.zone === parseInt($scope.zone)){
 					$scope.reports.push(report);
 				}
 			})
@@ -98,8 +118,8 @@ function AppController($scope, AppService, $q) {
 		fromDate.setDate(fromDate.getDate() + 1);
 		toDate.setDate(toDate.getDate() + 1);
 		
-		$scope.request.fromDate = fromDate.getTime();
-		$scope.request.toDate = toDate.getTime();
+		$scope.fromDate = fromDate.getTime();
+		$scope.toDate = toDate.getTime();
 		
 		getReports(request).then(function(){
 			$scope.players = [];
@@ -138,7 +158,9 @@ function AppController($scope, AppService, $q) {
 		var request = {
 			characterName 	: 	player.name,
 			server			:	$scope.request.server,
-			region			:	$scope.request.region
+			region			:	$scope.request.region,
+			zone			: 	$scope.zone,
+			metric			: 	$scope.metric
 		};
 		AppService.getRankings(request).get().$promise.then(function(response){
 			player.rank = getAverageRank(response);
@@ -151,21 +173,7 @@ function AppController($scope, AppService, $q) {
 		var rank = {
 			average : 0,
 			median : 0,
-			encounters : {
-				1778 : { average : 0, averages : [] },
-				1785 : { average : 0, averages : [] },
-				1787 : { average : 0, averages : [] },
-				1798 : { average : 0, averages : [] },
-				1786 : { average : 0, averages : [] },
-				1783 : { average : 0, averages : [] },
-				1788 : { average : 0, averages : [] },
-				1777 : { average : 0, averages : [] },
-				1800 : { average : 0, averages : [] },
-				1794 : { average : 0, averages : [] },
-				1784 : { average : 0, averages : [] },
-				1795 : { average : 0, averages : [] },
-				1799 : { average : 0, averages : [] },
-			}
+			encounters : angular.copy($scope.encounters)
 		};
 		
 		var averages = [];
@@ -175,11 +183,19 @@ function AppController($scope, AppService, $q) {
 				if ($scope.overallRank) {
 					var average = ((thisRank.outOf - thisRank.rank) / thisRank.outOf) * 100;
 					averages.push(average);
-					rank.encounters[thisRank.encounter].averages.push(average);
-				} else if (!$scope.overallRank && thisRank.startTime > $scope.request.fromDate && thisRank.startTime < $scope.request.toDate) {
+					angular.forEach(rank.encounters, function(encounter){
+						if (encounter.id === thisRank.encounter) {
+							encounter.averages.push(average);
+						}
+					});
+				} else if (!$scope.overallRank && thisRank.startTime > $scope.fromDate && thisRank.startTime < $scope.toDate) {
 					var average = ((thisRank.outOf - thisRank.rank) / thisRank.outOf) * 100;
 					averages.push(average);
-					rank.encounters[thisRank.encounter].averages.push(average);
+					angular.forEach(rank.encounters, function(encounter){
+						if (encounter.id === thisRank.encounter) {
+							encounter.averages.push(average);
+						}
+					});
 				}
 			};
 		});

@@ -1,0 +1,20 @@
+body {
+	background-color : black;
+	color : maroon;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    padding: 2px;
+}
+
+tr:nth-child(even){background-color: Black}
+tr:nth-child(odd){background-color: #330000}
+
+tr:hover {
+	background-color: #1a0000;
+}

@@ -1,18 +1,21 @@
 {
-  "name": "angular-seed",
-  "description": "A starter project for AngularJS",
+  "name": "rpmlogs",
+  "description": "A starter site for Rage Pillage Murder",
   "version": "0.0.0",
-  "homepage": "https://github.com/angular/angular-seed",
+  "homepage": "https://github.com/Lazeeboy/rpmlogs",
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "angular": "1.2.x",
-    "angular-route": "1.2.x",
-    "angular-loader": "1.2.x",
-    "angular-mocks": "~1.2.x",
-    "angular-resource": "1.2.x",
+    "angular": "1.5.3",
+    "angular-route": "1.5.3",
+    "angular-loader": "1.5.3",
+    "angular-mocks": "1.5.3",
+    "angular-resource": "1.5.3",
     "html5-boilerplate": "~4.3.0",
     "ngDatepicker":"latest",
-    "jquery":"latest"
+    "jquery":"latest",
+    "angular-material":"latest",
+    "angular-animate":"latest",
+    "angular-aria":"latest"
   }
 }

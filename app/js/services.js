@@ -18,7 +18,7 @@ function AppService($resource) {
 			{
 				get	:	{
 					method	: 	'GET',
-					params	:	{ api_key : '2390608c616404a931f799de714460a8', start : request.fromDate, end : request.toDate },
+					params	:	{ api_key : '2390608c616404a931f799de714460a8'},
 					isArray : 	true
 				}
 			}
@@ -63,7 +63,7 @@ function AppService($resource) {
 			{
 				get	:	{
 					method	: 	'GET',
-					params	:	{ api_key : '2390608c616404a931f799de714460a8'},
+					params	:	{ api_key : '2390608c616404a931f799de714460a8', zone : request.zone, metric : request.metric},
 					isArray : 	true
 				}
 			}		

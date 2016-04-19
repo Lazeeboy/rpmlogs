@@ -1,102 +1,85 @@
-<form class="col-md-12">
-	<div class="col-md-12">
-		<div class="col-md-12">
-			<label class="col-md-3">Guild Name</label>
-			<label class="col-md-3">Server</label>
-			<label class="col-md-3">Region</label>
-		</div>
-	
-		<div class="col-md-12">
-			<input class="col-md-3" type="text" name="input" ng-model="request.guild">
-			<input class="col-md-3" type="text" name="input" ng-model="request.server">
-			<input class="col-md-3" type="text" name="input" ng-model="request.region">
-		</div>
-	</div>
+<form class="col-lg-12 col-md-12">
 
-	<div class="col-md-12">
-		<div class="col-md-12">
-			<label class="col-md-3">Raid</label >
-			<label class="col-md-3">Difficulty</label>
-			<label class="col-md-3">Overall Rank</label>
+	<div class="row">
+		<div class="col-lg-4 col-md-4">
+			<label for="guildNameInput">Guild Name</label>
+			<input class="form-control" type="text" id="guildNameInput" name="input" ng-model="request.guild">
 		</div>
+		<div class="col-lg-4 col-md-4">
+			<label for="serverInput">Server</label>
+			<input class="form-control" type="text" id="serverInput" name="input" ng-model="request.server">
+		</div>
+		<div class="col-lg-4 col-md-4">
+			<label for="regionInput">Region</label>
+			<input class="form-control" type="text" id="regionInput" name="input" ng-model="request.region">
+		</div>
+	</div>	
 	
-		<div class="col-md-12">
-			<select class="col-md-3" ng-model="raid">
-				<option ng-repeat="raid in raids" value="{{raid.id}}">{{raid.name}}</option>
+	<div class="row">
+		<div class="col-lg-4 col-md-4">
+			<label for="raidInput">Raid</label>
+			<select class="form-control" ng-model="zone" id="raidInput" ng-change="getEncounters()">
+				<option ng-repeat="zone in zones" value="{{zone.id}}">{{zone.name}}</option>
 			</select>
-			<select class="col-md-3" ng-model="difficulty">
+		</div>
+		<div class="col-lg-4 col-md-4">
+			<label for="difficultyInput">Difficulty</label>
+			<select class="form-control" ng-model="difficulty" id="difficultyInput">
 				<option ng-repeat="difficulty in difficulties" value="{{difficulty.difficultyId}}">{{difficulty.difficultyName}}</option>
-			</select>				
-			<input class="col-md-1" type="checkbox" ng-model="overallRank"></input>
+			</select>
+		</div>
+		<div class="col-lg-4 col-md-4">
+			<label for="metricInput">Metric</label>
+			<select class="form-control" ng-model="metric" id="metricInput">
+				<option ng-repeat="metric in metrics" value="{{metric.id}}">{{metric.name}}</option>
+			</select>	
 		</div>
 	</div>
 	
-	<div class="col-md-12">
-		<div class="col-md-12">
-			<label class="col-md-2">From Date</label>
-			<label class="col-md-2">To Date</label>
+	<div class="row">
+		<div class="col-lg-1 col-md-1">
+			<label for="overallRankInput">Overall Rank</label>
+			<input class="checkbox" type="checkbox" id="overallRankInput" ng-model="overallRank"></input>
 		</div>
-		<div class="col-md-12">
-			<ng-datepicker class="col-md-2" ng-model="fromDate"></ng-datepicker>
-			<ng-datepicker class="col-md-2" ng-model="toDate"></ng-datepicker>
-			<button class="col-md-1" ng-disabled="searchIsRunning" ng-click="search(request)">Search</button>
+		<div class="col-lg-2 col-md-2">
+			<label for="fromDateInput">From Date</label>
+			<md-datepicker ng-model="fromDate" id="fromDateInput" ng-disabled="overallRank"></ng-datepicker>
+		</div>
+		<div class="col-lg-2 col-md-2">
+			<label for="toDateInput">To Date</label>
+			<md-datepicker ng-model="toDate" id="toDateInput" ng-disabled="overallRank"></ng-datepicker>
+		</div>
+		<div class="col-lg-1 col-md-1">
+			<button class="btn btn-primary" ng-disabled="searchIsRunning" ng-click="search(request)">Search</button>
 		</div>
 	</div>
 
 </form>
 
-<style>
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-th, td {
-    padding: 2px;
-}
-
-tr:nth-child(even){background-color: #bfbfbf}
-tr:nth-child(odd){background-color: #e6e6e6}
-
-tr:hover {
-	background-color: #ffffb3;
-}
-</style>
-
 <div>
-<table>
-<div>{{players.length}} Players</div>
-<thead>
-  <tr>
-  	<th colspan="2">Index</th>
-  	<th ng-click="order('name')" colspan="2">Name</th>
-  	<th ng-click="order('type')" colspan="2">Class</th>
-  	<th ng-click="order('rank.average')" colspan="2">Average</th>
-  	<th ng-click="order('rank.median')" colspan="2">Median</th>
-  	<th ng-repeat="encounter in zone.encounters" colspan="2"><div ng-click="order('rank.encounters[' + encounter.id + '].average')">{{encounter.name}}</div></th>
-  </tr>
-</thead>
-<tbody>
-  <tr ng-repeat="player in players | orderBy:orderFilter:reverse">
-  	<td colspan="2">{{$index+1}}</td>
-  	<td colspan="2">{{player.name}}</td>
-    <td colspan="2">{{player.type}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.average >= 80 && {'color': '#009933'} || player.rank.average < 80 && player.rank.average >= 50 && {'color': '#999900'} || player.rank.average < 50 && player.rank.average > 0 && {'color': '#800000'}">{{player.rank.average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.median >= 80 && {'color': '#009933'} || player.rank.median < 80 && player.rank.median >= 50 && {'color': '#999900'} || player.rank.median < 50 && player.rank.median > 0 && {'color': '#800000'}">{{player.rank.median  | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1778].average >= 80 && {'color': '#009933'} || player.rank.encounters[1778].average < 80 && player.rank.encounters[1778].average >= 50 && {'color': '#999900'} || player.rank.encounters[1778].average < 50 && player.rank.encounters[1778].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1778].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1785].average >= 80 && {'color': '#009933'} || player.rank.encounters[1785].average < 80 && player.rank.encounters[1785].average >= 50 && {'color': '#999900'} || player.rank.encounters[1785].average < 50 && player.rank.encounters[1785].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1785].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1787].average >= 80 && {'color': '#009933'} || player.rank.encounters[1787].average < 80 && player.rank.encounters[1787].average >= 50 && {'color': '#999900'} || player.rank.encounters[1787].average < 50 && player.rank.encounters[1787].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1787].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1798].average >= 80 && {'color': '#009933'} || player.rank.encounters[1798].average < 80 && player.rank.encounters[1798].average >= 50 && {'color': '#999900'} || player.rank.encounters[1798].average < 50 && player.rank.encounters[1798].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1798].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1786].average >= 80 && {'color': '#009933'} || player.rank.encounters[1786].average < 80 && player.rank.encounters[1786].average >= 50 && {'color': '#999900'} || player.rank.encounters[1786].average < 50 && player.rank.encounters[1786].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1786].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1783].average >= 80 && {'color': '#009933'} || player.rank.encounters[1783].average < 80 && player.rank.encounters[1783].average >= 50 && {'color': '#999900'} || player.rank.encounters[1783].average < 50 && player.rank.encounters[1783].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1783].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1788].average >= 80 && {'color': '#009933'} || player.rank.encounters[1788].average < 80 && player.rank.encounters[1788].average >= 50 && {'color': '#999900'} || player.rank.encounters[1788].average < 50 && player.rank.encounters[1788].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1788].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1777].average >= 80 && {'color': '#009933'} || player.rank.encounters[1777].average < 80 && player.rank.encounters[1777].average >= 50 && {'color': '#999900'} || player.rank.encounters[1777].average < 50 && player.rank.encounters[1777].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1777].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1800].average >= 80 && {'color': '#009933'} || player.rank.encounters[1800].average < 80 && player.rank.encounters[1800].average >= 50 && {'color': '#999900'} || player.rank.encounters[1800].average < 50 && player.rank.encounters[1800].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1800].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1794].average >= 80 && {'color': '#009933'} || player.rank.encounters[1794].average < 80 && player.rank.encounters[1794].average >= 50 && {'color': '#999900'} || player.rank.encounters[1794].average < 50 && player.rank.encounters[1794].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1794].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1784].average >= 80 && {'color': '#009933'} || player.rank.encounters[1784].average < 80 && player.rank.encounters[1784].average >= 50 && {'color': '#999900'} || player.rank.encounters[1784].average < 50 && player.rank.encounters[1784].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1784].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1795].average >= 80 && {'color': '#009933'} || player.rank.encounters[1795].average < 80 && player.rank.encounters[1795].average >= 50 && {'color': '#999900'} || player.rank.encounters[1795].average < 50 && player.rank.encounters[1795].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1795].average | number:2}}</td>
-    <td align="center" colspan="2" ng-style="player.rank.encounters[1799].average >= 80 && {'color': '#009933'} || player.rank.encounters[1799].average < 80 && player.rank.encounters[1799].average >= 50 && {'color': '#999900'} || player.rank.encounters[1799].average < 50 && player.rank.encounters[1799].average > 0 && {'color': '#800000'}">{{player.rank.encounters[1799].average | number:2}}</td>
-  </tr>
-</tbody>
-</table>
+	<table>
+		<div>{{players.length}} Players</div>
+		<thead>
+			<tr>
+				<th colspan="2">Index</th>
+				<th ng-click="order('name')" colspan="2">Name</th>
+				<th ng-click="order('type')" colspan="2">Class</th>
+				<th ng-click="order('rank.average')" colspan="2">Average</th>
+				<th ng-click="order('rank.median')" colspan="2">Median</th>
+				<th ng-repeat-start="encounter in encounters" colspan="2">{{encounter.name}}</th>
+				<th ng-repeat-end></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="player in players | orderBy:orderFilter:reverse">
+				<td colspan="2">{{$index+1}}</td>
+				<td colspan="2">{{player.name}}</td>
+				<td colspan="2">{{player.type}}</td>
+				<td align="center" colspan="2" ng-style="player.rank.average >= 80 && {'color': 'green'} || player.rank.average < 80 && player.rank.average >= 50 && {'color': 'yellow'} || player.rank.average < 50 && player.rank.average > 0 && {'color': 'red'}">{{player.rank.average | number:2}}</td>
+				<td align="center" colspan="2" ng-style="player.rank.median >= 80 && {'color': 'green'} || player.rank.median < 80 && player.rank.median >= 50 && {'color': 'yellow'} || player.rank.median < 50 && player.rank.median > 0 && {'color': 'red'}">{{player.rank.median  | number:2}}</td>
+				<td ng-repeat-start="encounter in player.rank.encounters" align="center" colspan="2" ng-style="encounter.average >= 80 && {'color': 'green'} || encounter.average < 80 && encounter.average >= 50 && {'color': 'yellow'} || encounter.average < 50 && encounter.average > 0 && {'color': 'red'}">{{encounter.average | number:2}}</td>
+				<td ng-repeat-end></td>
+			</tr>
+		</tbody>
+	</table>
 </div>
