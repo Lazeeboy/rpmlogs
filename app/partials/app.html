@@ -16,22 +16,28 @@
 	</div>	
 	
 	<div class="row">
-		<div class="col-lg-4 col-md-4">
+		<div class="col-lg-3 col-md-3">
 			<label for="raidInput">Raid</label>
 			<select class="form-control" ng-model="zone" id="raidInput" ng-change="getEncounters()">
 				<option ng-repeat="zone in zones" value="{{zone.id}}">{{zone.name}}</option>
 			</select>
 		</div>
-		<div class="col-lg-4 col-md-4">
+		<div class="col-lg-3 col-md-3">
 			<label for="difficultyInput">Difficulty</label>
 			<select class="form-control" ng-model="difficulty" id="difficultyInput">
 				<option ng-repeat="difficulty in difficulties" value="{{difficulty.difficultyId}}">{{difficulty.difficultyName}}</option>
 			</select>
 		</div>
-		<div class="col-lg-4 col-md-4">
+		<div class="col-lg-3 col-md-3">
 			<label for="metricInput">Metric</label>
 			<select class="form-control" ng-model="metric" id="metricInput">
 				<option ng-repeat="metric in metrics" value="{{metric.id}}">{{metric.name}}</option>
+			</select>	
+		</div>
+		<div class="col-lg-3 col-md-3">
+			<label for="bracketInput">Brackets</label>
+			<select class="form-control" ng-model="bracket" id="bracketInput">
+				<option ng-repeat="bracket in brackets" value="{{bracket.id}}">{{bracket.name}}</option>
 			</select>	
 		</div>
 	</div>

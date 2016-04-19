@@ -18,6 +18,7 @@ function AppController($scope, AppService, $q) {
 	$scope.order = order;
 	$scope.zone = '8';
 	$scope.difficulty = '5';
+	$scope.bracket = '0'
 	$scope.metric = 'dps';
 	$scope.search = search;
 	$scope.getEncounters = getEncounters;
@@ -49,6 +50,7 @@ function AppController($scope, AppService, $q) {
        {difficultyId : "5", difficultyName : "Mythic"}
     ];
 	$scope.encounters = [];
+	$scope.brackets = [];
 	
 	$scope.fromDate = new Date();
 	$scope.toDate = new Date();
@@ -89,8 +91,19 @@ function AppController($scope, AppService, $q) {
 					encounter.averages = [];
 					$scope.encounters.push(encounter);
 				});
+				getBrackets(zone.brackets);
 			}
 		});
+	}
+	
+	function getBrackets(brackets) {
+		$scope.brackets = [{id:'0',name:'All'}];
+		if (brackets !== undefined){
+			angular.forEach(brackets, function(bracket){
+				$scope.brackets.push(bracket);
+			});
+		}
+		$scope.bracket = '0';
 	}
 	
 	function getReports(request) {
@@ -160,7 +173,8 @@ function AppController($scope, AppService, $q) {
 			server			:	$scope.request.server,
 			region			:	$scope.request.region,
 			zone			: 	$scope.zone,
-			metric			: 	$scope.metric
+			metric			: 	$scope.metric,
+			bracket			:	$scope.bracket
 		};
 		AppService.getRankings(request).get().$promise.then(function(response){
 			player.rank = getAverageRank(response);
