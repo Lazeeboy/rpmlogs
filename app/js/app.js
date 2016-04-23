@@ -1,11 +1,15 @@
 angular
 	.module('App', ['ui.router', 
+	                'ui.bootstrap',
+	                'ngAnimate',
 	                'ngResource', 
 	                'jkuri.datepicker', 
 	                'ngMaterial', 
 	                'ngMessages', 
-	                'anguFixedHeaderTable'])
-	.config(RouteManager)
+	                'anguFixedHeaderTable',
+	                'angularjs-datetime-picker',
+	                'angularMoment'])
+	.config(RouteManager);
 		
 RouteManager.$inject = ['$stateProvider', '$urlRouterProvider'];
 function RouteManager($stateProvider, $urlRouterProvider) {

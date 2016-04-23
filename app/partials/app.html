@@ -1,87 +1,89 @@
 <form class="col-lg-12 col-md-12">
 
 	<div class="row">
-		<div class="col-lg-4 col-md-4">
+		<div class="col-lg-2 col-md-2">
 			<label for="guildNameInput">Guild Name</label>
 			<input class="form-control" type="text" id="guildNameInput" name="input" ng-model="request.guild">
 		</div>
-		<div class="col-lg-4 col-md-4">
+		<div class="col-lg-2 col-md-2">
 			<label for="serverInput">Server</label>
 			<input class="form-control" type="text" id="serverInput" name="input" ng-model="request.server">
 		</div>
-		<div class="col-lg-4 col-md-4">
+		<div class="col-lg-2 col-md-2">
 			<label for="regionInput">Region</label>
 			<input class="form-control" type="text" id="regionInput" name="input" ng-model="request.region">
 		</div>
-	</div>	
-	
-	<div class="row">
-		<div class="col-lg-3 col-md-3">
+		<div class="col-lg-2 col-md-2">
 			<label for="raidInput">Raid</label>
 			<select class="form-control" ng-model="zone" id="raidInput" ng-change="getEncounters()">
 				<option ng-repeat="zone in zones" value="{{zone.id}}">{{zone.name}}</option>
 			</select>
 		</div>
-		<div class="col-lg-3 col-md-3">
+		<div class="col-lg-2 col-md-2">
 			<label for="difficultyInput">Difficulty</label>
 			<select class="form-control" ng-model="difficulty" id="difficultyInput">
 				<option ng-repeat="difficulty in difficulties" value="{{difficulty.difficultyId}}">{{difficulty.difficultyName}}</option>
 			</select>
 		</div>
-		<div class="col-lg-3 col-md-3">
+		<div class="col-lg-2 col-md-2">
 			<label for="metricInput">Metric</label>
 			<select class="form-control" ng-model="metric" id="metricInput">
 				<option ng-repeat="metric in metrics" value="{{metric.id}}">{{metric.name}}</option>
 			</select>	
-		</div>
-		<div class="col-lg-3 col-md-3">
+		</div>		
+	</div>	
+	
+	<div class="row">
+		<div class="col-lg-2 col-md-2">
 			<label for="bracketInput">Brackets</label>
 			<select class="form-control" ng-model="bracket" id="bracketInput">
 				<option ng-repeat="bracket in brackets" value="{{bracket.id}}">{{bracket.name}}</option>
 			</select>
 		</div>
-	</div>
-	
-	<div class="row">
+		<div class="col-lg-2 col-md-2">
+			<label for="fromDateInput">From Date</label><br/>
+			<input class="form-control" ng-model="fromDate" id="fromDateInput" datetime-picker date-format="MM/dd/yyyy" date-only></input>
+		</div>
+		<div class="col-lg-2 col-md-2">
+			<label for="toDateInput">To Date</label><br/>
+			<input class="form-control" ng-model="toDate" id="toDateInput" datetime-picker date-format="MM/dd/yyyy" date-only></input>
+		</div>
 		<div class="col-lg-1 col-md-1">
 			<label for="overallRankInput">Overall Rank</label>
-			<input class="checkbox" type="checkbox" id="overallRankInput" ng-model="overallRank"></input>
-		</div>
-		<div class="col-lg-2 col-md-2">
-			<label for="fromDateInput">From Date</label>
-			<md-datepicker ng-model="fromDate" id="fromDateInput" ng-disabled="overallRank"></ng-datepicker>
-		</div>
-		<div class="col-lg-2 col-md-2">
-			<label for="toDateInput">To Date</label>
-			<md-datepicker ng-model="toDate" id="toDateInput" ng-disabled="overallRank"></ng-datepicker>
+			<input class="form-control" style="background-color:black;" type="checkbox" id="overallRankInput" ng-model="overallRank"></input>
 		</div>
 		<div class="col-lg-1 col-md-1">
-			<button class="btn btn-primary" ng-disabled="searchIsRunning" ng-click="search(request)">Search</button>
-		</div>
+			<br/><button class="btn btn-lg btn-primary" ng-disabled="searchIsRunning" ng-click="search(request)">Search</button>
+		</div>		
 	</div>
-
+	
 </form>
 
 <div>
-	<table fixed-header>
-		<div>{{players.length}} Players</div>
+	<div>{{players.length}} Players</div>
+	<div ng-show="searchIsRunning">
+		<uib-progressbar class="progress-striped active" type="danger">Searching ...</uib-progressbar>
+	</div>		
+	<table fixed-header ng-hide="searchIsRunning || players.length === 0">
 		<thead>
-			<th colspan="2">Index</th>
-			<th ng-click="order('name')" colspan="2">Name</th>
-			<th ng-click="order('type')" colspan="2">Class</th>
-			<th ng-click="order('rank.average')" colspan="2">Average</th>
-			<th ng-click="order('rank.median')" colspan="2">Median</th>
-			<th ng-repeat-start="encounter in encounters" colspan="2">{{encounter.name}}</th>
-			<th ng-repeat-end></th>
+			<tr>
+				<th style="width:5%;">Index</th>
+				<th style="width:5%;" ng-click="order('name')">Name</th>
+				<th style="width:5%;" ng-click="order('type')">Class</th>
+				<th style="width:5%;" ng-click="order('rank.average')">Average</th>
+				<th style="width:5%;" ng-click="order('rank.median')">Median</th>
+				<th style="width:5%;" ng-repeat-start="encounter in encounters">{{encounter.name}}</th>
+				<th ng-repeat-end></th>
+			</tr>				
 		</thead>
 		<tbody>
 			<tr ng-repeat="player in players | orderBy:orderFilter:reverse">
-				<td colspan="2">{{$index+1}}</td>
-				<td colspan="2">{{player.name}}</td>
-				<td colspan="2">{{player.type}}</td>
-				<td align="center" colspan="2" ng-style="player.rank.average >= 80 && {'color': 'green'} || player.rank.average < 80 && player.rank.average >= 50 && {'color': 'yellow'} || player.rank.average < 50 && player.rank.average > 0 && {'color': 'red'}">{{player.rank.average | number:2}}</td>
-				<td align="center" colspan="2" ng-style="player.rank.median >= 80 && {'color': 'green'} || player.rank.median < 80 && player.rank.median >= 50 && {'color': 'yellow'} || player.rank.median < 50 && player.rank.median > 0 && {'color': 'red'}">{{player.rank.median  | number:2}}</td>
-				<td ng-repeat-start="encounter in player.rank.encounters" align="center" colspan="2" ng-style="encounter.average >= 80 && {'color': 'green'} || encounter.average < 80 && encounter.average >= 50 && {'color': 'yellow'} || encounter.average < 50 && encounter.average > 0 && {'color': 'red'}">{{encounter.average | number:2}}</td>
+				<td style="width:5%;">{{$index+1}}</td>
+				<td style="width:5%;">{{player.name}}</td>
+				<td style="width:5%;">{{player.type}}</td>
+				<td style="width:5%;" ng-style="player.rank.average >= 80 && {'color': 'green'} || player.rank.average < 80 && player.rank.average >= 50 && {'color': 'yellow'} || player.rank.average < 50 && player.rank.average > 0 && {'color': 'red'}">{{player.rank.average | number:2}}</td>
+				<td style="width:5%;" ng-style="player.rank.median >= 80 && {'color': 'green'} || player.rank.median < 80 && player.rank.median >= 50 && {'color': 'yellow'} || player.rank.median < 50 && player.rank.median > 0 && {'color': 'red'}">{{player.rank.median  | number:2}}</td>
+				<td style="width:5%;" ng-repeat-start="encounter in player.rank.encounters" ng-style="encounter.average >= 80 && {'color': 'green'} || encounter.average < 80 && encounter.average >= 50 && {'color': 'yellow'} || encounter.average < 50 && encounter.average > 0 && {'color': 'red'}">{{encounter.average | number:2}}</td>
 				<td ng-repeat-end></td>
 			</tr>
 		</tbody>

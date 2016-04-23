@@ -12,12 +12,17 @@
     "angular-mocks": "1.5.3",
     "angular-resource": "1.5.3",
     "html5-boilerplate": "~4.3.0",
-    "ngDatepicker":"latest",
-    "jquery":"latest",
-    "angular-material":"latest",
-    "angular-animate":"latest",
-    "angular-aria":"latest",
-    "angu-fixed-header-table":"latest",
-    "angular-ui-router":"latest"
+    "ngDatepicker": "latest",
+    "jquery": "latest",
+    "angular-material": "latest",
+    "angular-animate": "latest",
+    "angular-aria": "latest",
+    "angu-fixed-header-table": "latest",
+    "angular-ui-router": "latest",
+    "angularjs-datetime-picker": "latest",
+    "moment": "^2.13.0",
+    "angular-moment": "^0.10.3",
+    "bootstrap": "^3.3.6",
+    "angular-bootstrap": "^1.3.2"
   }
 }

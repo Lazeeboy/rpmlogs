@@ -2,8 +2,8 @@ angular
 	.module('App')
 	.controller('AppController', AppController);
 
-AppController.$inject = ['$scope', 'AppService', '$q'];
-function AppController($scope, AppService, $q) {	
+AppController.$inject = ['$scope', 'AppService', '$q', 'moment', '$timeout'];
+function AppController($scope, AppService, $q, moment, $timeout) {	
 	$scope.reports = [];
 	$scope.players = [];
 	$scope.names = [];
@@ -54,7 +54,10 @@ function AppController($scope, AppService, $q) {
 	$scope.brackets = [];
 	
 	$scope.fromDate = new Date();
+	$scope.fromDate.setDate($scope.fromDate.getDate() - 14);
+	$scope.fromDate = moment($scope.fromDate).format('MM/DD/YYYY');
 	$scope.toDate = new Date();
+	$scope.toDate = moment($scope.toDate).format('MM/DD/YYYY');
 	
 	$scope.request = {
 		guild : 'Rage Pillage Murder',
@@ -64,15 +67,28 @@ function AppController($scope, AppService, $q) {
 		toDate : ''
 	}
 	
-	$scope.fromDate.setDate($scope.fromDate.getDate() - 14);
-	
 	getZones();
 	
 	function search(request) {
 		$scope.searchIsRunning = true;
-		getPlayers(request).then(function(){
-			$scope.searchIsRunning = false;
-		});
+		$scope.tempLength = 0;
+		
+		getPlayers(request).then(function(){});
+				
+		$timeout(function(){
+			timeout();
+		},2000);
+	}
+	
+	function timeout() {
+		$timeout(function(){
+			if ($scope.players.length !== $scope.tempLength) {
+				$scope.tempLength = $scope.players.length;
+				timeout();
+			} else {
+				$scope.searchIsRunning = false;
+			}
+		},1000);	
 	}
 	
 	function getZones() {
@@ -108,15 +124,18 @@ function AppController($scope, AppService, $q) {
 	}
 	
 	function getReports(request) {
-		var deffered = $q.defer();
+		var deffered = $q.defer(); 
 		$scope.reports = [];
 		$scope.players = [];
+		$scope.names = [];
+		$scope.rankings = [];
+
 		AppService.getReports(request).get().$promise.then(function(response){
 			angular.forEach(response, function(report){
 				if(report.zone === parseInt($scope.zone)){
 					$scope.reports.push(report);
 				}
-			})
+			});
 			deffered.resolve();
 		});
 		
@@ -125,6 +144,7 @@ function AppController($scope, AppService, $q) {
 	
 	function getPlayers(request){
 		var deferred = $q.defer();
+		var promises = [];
 		
 		var fromDate = new Date($scope.fromDate);
 		var toDate = new Date($scope.toDate);
@@ -135,11 +155,14 @@ function AppController($scope, AppService, $q) {
 		$scope.fromDateMillis = fromDate.getTime();
 		$scope.toDateMillis = toDate.getTime();
 		
+		$scope.request.fromDate = $scope.fromDateMillis;
+		$scope.request.toDate = $scope.toDateMillis;
+		
 		getReports(request).then(function(){
 			$scope.players = [];
 			$scope.names = [];
 			angular.forEach($scope.reports, function(report){
-				AppService.getPlayers(report.id).get().$promise.then(function(response){
+				promises.push(AppService.getPlayers(report.id).get().$promise.then(function(response){
 					var selectedDifficulty = false;
 					
 					angular.forEach(response.fights, function(fight){
@@ -160,7 +183,7 @@ function AppController($scope, AppService, $q) {
 							}
 						});
 					};
-				});
+				}));
 			});
 		});
 		deferred.resolve();
@@ -203,7 +226,7 @@ function AppController($scope, AppService, $q) {
 							encounter.averages.push(average);
 						}
 					});
-				} else if (!$scope.overallRank && thisRank.startTime > $scope.fromDate && thisRank.startTime < $scope.toDate) {
+				} else if (!$scope.overallRank && thisRank.startTime > $scope.fromDateMillis && thisRank.startTime < $scope.toDateMillis) {
 					var average = ((thisRank.outOf - thisRank.rank) / thisRank.outOf) * 100;
 					averages.push(average);
 					angular.forEach(rank.encounters, function(encounter){

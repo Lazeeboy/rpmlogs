@@ -5,7 +5,8 @@ angular
 AppService.$inject = ['$resource'];
 	
 function AppService($resource) {
-	var baseURL = 'https://www.warcraftlogs.com:443/v1/'
+	var baseURL = 'https://www.warcraftlogs.com:443/v1/';
+	var apiKey = '2390608c616404a931f799de714460a8';
 	var logService = {};
 	
 	logService.getReports = function(request) {
@@ -18,7 +19,7 @@ function AppService($resource) {
 			{
 				get	:	{
 					method	: 	'GET',
-					params	:	{ api_key : '2390608c616404a931f799de714460a8'},
+					params	:	{ api_key : apiKey, start : request.fromDate, end : request.toDate },
 					isArray : 	true
 				}
 			}
@@ -33,7 +34,7 @@ function AppService($resource) {
 			{
 				get	:	{
 					method	: 	'GET',
-					params	:	{ api_key : '2390608c616404a931f799de714460a8'}
+					params	:	{ api_key : apiKey }
 				}
 			}
 		);
@@ -46,7 +47,7 @@ function AppService($resource) {
 			{
 				get	:	{
 					method	: 	'GET',
-					params	:	{ api_key : '2390608c616404a931f799de714460a8'},
+					params	:	{ api_key : apiKey },
 					isArray : 	true
 				}
 			}
@@ -63,7 +64,7 @@ function AppService($resource) {
 			{
 				get	:	{
 					method	: 	'GET',
-					params	:	{ api_key : '2390608c616404a931f799de714460a8', zone : request.zone, metric : request.metric, bracket : request.bracket },
+					params	:	{ api_key : apiKey, zone : request.zone, metric : request.metric, bracket : request.bracket },
 					isArray : 	true
 				}
 			}		
