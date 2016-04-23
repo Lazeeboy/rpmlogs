@@ -63,18 +63,16 @@
 </form>
 
 <div>
-	<table>
+	<table fixed-header>
 		<div>{{players.length}} Players</div>
 		<thead>
-			<tr>
-				<th colspan="2">Index</th>
-				<th ng-click="order('name')" colspan="2">Name</th>
-				<th ng-click="order('type')" colspan="2">Class</th>
-				<th ng-click="order('rank.average')" colspan="2">Average</th>
-				<th ng-click="order('rank.median')" colspan="2">Median</th>
-				<th ng-repeat-start="encounter in encounters" colspan="2">{{encounter.name}}</th>
-				<th ng-repeat-end></th>
-			</tr>
+			<th colspan="2">Index</th>
+			<th ng-click="order('name')" colspan="2">Name</th>
+			<th ng-click="order('type')" colspan="2">Class</th>
+			<th ng-click="order('rank.average')" colspan="2">Average</th>
+			<th ng-click="order('rank.median')" colspan="2">Median</th>
+			<th ng-repeat-start="encounter in encounters" colspan="2">{{encounter.name}}</th>
+			<th ng-repeat-end></th>
 		</thead>
 		<tbody>
 			<tr ng-repeat="player in players | orderBy:orderFilter:reverse">

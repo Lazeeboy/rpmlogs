@@ -132,8 +132,8 @@ function AppController($scope, AppService, $q) {
 		fromDate.setDate(fromDate.getDate() + 1);
 		toDate.setDate(toDate.getDate() + 1);
 		
-		$scope.fromDate = fromDate.getTime();
-		$scope.toDate = toDate.getTime();
+		$scope.fromDateMillis = fromDate.getTime();
+		$scope.toDateMillis = toDate.getTime();
 		
 		getReports(request).then(function(){
 			$scope.players = [];
