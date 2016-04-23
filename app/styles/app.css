@@ -2,7 +2,7 @@ body {
 	background-color: black;
 	color: maroon;
 	background-image: url("../assets/images/rpm_home.jpg");
-	background-size: cover;
+	background-size: 100% 100%;
 }
 
 table {
