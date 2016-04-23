@@ -16,6 +16,8 @@
     "jquery":"latest",
     "angular-material":"latest",
     "angular-animate":"latest",
-    "angular-aria":"latest"
+    "angular-aria":"latest",
+    "angu-fixed-header-table":"latest",
+    "angular-ui-router":"latest"
   }
 }
