@@ -22,6 +22,12 @@ Then, run the Application:
 npm start
 ```
 
+To update angular packages run:
+
+```
+bower install
+```
+
 You can access your app at 
 
 ```
